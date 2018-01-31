@@ -8,6 +8,12 @@ include_once 'ajax_user.php';
 include_once 'ajax_zoom.php';
 include_once 'app/ajax_external.php';
 
+add_filter( 'allowed_http_origins', 'add_allowed_origins' );
+function add_allowed_origins( $origins ) {
+    $origins[] = 'http://localhost:8080';
+    return $origins;
+}
+
 //**** Ajax Helper ****************************/
 function ajax_return($status, $data) {
     $res = array();
