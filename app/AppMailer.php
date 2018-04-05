@@ -6,6 +6,7 @@ class AppMailer {
     const TYPE_STUDENT_REGISTRATION = "STUDENT_REGISTRATION";
     const TYPE_RESET_PASSWORD = "RESET_PASSWORD";
     const TYPE_NEW_RECRUITER = "NEW_RECRUITER";
+    const TYPE_CUSTOM_EMAIL = "CUSTOM_EMAIL";
     const EMAIL_TEMPLATE = APP_AJAX_PATH . "email_template";
 
     public static function send_mail($to_email, $email_data, $type) {
@@ -18,7 +19,11 @@ class AppMailer {
         add_filter('wp_mail_content_type', 'app_set_html_mail_content_type');
 
         $apps_name = "Seeds Job Fair";
-        $content = file_get_contents(self::EMAIL_TEMPLATE . "/$type.html");
+
+        if($type != self::TYPE_CUSTOM_EMAIL){
+            $content = file_get_contents(self::EMAIL_TEMPLATE . "/$type.html");
+        }
+
         $title = "";
 
         //** title and content generation using $email_data ***//
@@ -51,6 +56,11 @@ class AppMailer {
                 $replace = array($email_data["company_name"], $apps_name, $email_data["reset_password_link"]);
                 $content = str_replace($search, $replace, $content);
                 break;
+
+            case self::TYPE_CUSTOM_EMAIL:
+                $title = $email_data["title"];
+                $content = $email_data["content"];
+                break; 
         }
 
         // add footer
